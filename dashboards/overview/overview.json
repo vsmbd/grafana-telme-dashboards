@@ -101,7 +101,7 @@
           "format" : 1,
           "pluginVersion" : "4.4.0",
           "queryType" : "sql",
-          "rawSql" : "SELECT\n  toStartOfInterval(r.event_wall_time, INTERVAL 15 MINUTE) AS time,\n  uniqExact(r.session_id) AS sessions\nFROM records AS r\nWHERE $__timeFilter(r.event_wall_time)\nGROUP BY time\nORDER BY time",
+          "rawSql" : "SELECT\n\ttoStartOfInterval(r.event_wall_time, INTERVAL 15 MINUTE) AS time,\n\tuniqExact(r.session_id) AS sessions\nFROM records AS r\nWHERE $__timeFilter(r.event_wall_time)\nGROUP BY time\nORDER BY time",
           "refId" : "A"
         }
       ],
@@ -177,7 +177,7 @@
           "format" : 1,
           "pluginVersion" : "4.4.0",
           "queryType" : "sql",
-          "rawSql" : "SELECT\n  toStartOfInterval(r.event_wall_time, INTERVAL 1 HOUR) AS time,\n  uniqExactIf(r.session_id, r.kind LIKE '%CheckpointEvent%' OR r.kind LIKE '%checkpoint%') AS checkpoint_sessions,\n  uniqExactIf(r.session_id, r.kind LIKE '%TaskQueue%') AS taskqueue_sessions\nFROM records AS r\nWHERE $__timeFilter(r.event_wall_time)\nGROUP BY time\nORDER BY time",
+          "rawSql" : "SELECT\n\ttoStartOfInterval(r.event_wall_time, INTERVAL 1 HOUR) AS time,\n\tuniqExactIf(r.session_id, r.kind LIKE '%CheckpointEvent%' OR r.kind LIKE '%checkpoint%') AS checkpoint_sessions,\n\tuniqExactIf(r.session_id, r.kind LIKE '%TaskQueue%') AS taskqueue_sessions\nFROM records AS r\nWHERE $__timeFilter(r.event_wall_time)\nGROUP BY time\nORDER BY time",
           "refId" : "A"
         }
       ],
@@ -248,7 +248,7 @@
           "format" : 0,
           "pluginVersion" : "4.4.0",
           "queryType" : "sql",
-          "rawSql" : "SELECT round(avg(cnt), 2) AS value\nFROM (\n  SELECT count() AS cnt\n  FROM records\n  WHERE $__timeFilter(event_wall_time)\n  GROUP BY session_id\n)",
+          "rawSql" : "SELECT round(avg(cnt), 2) AS value\nFROM (\n\tSELECT count() AS cnt\n\tFROM records\n\tWHERE $__timeFilter(event_wall_time)\n\tGROUP BY session_id\n)",
           "refId" : "A"
         }
       ],
@@ -381,7 +381,7 @@
           "format" : 0,
           "pluginVersion" : "4.4.0",
           "queryType" : "sql",
-          "rawSql" : "SELECT quantileExact(0.5)(cnt) AS value\nFROM (\n  SELECT count() AS cnt\n  FROM records\n  WHERE $__timeFilter(event_wall_time)\n  GROUP BY session_id\n)",
+          "rawSql" : "SELECT quantileExact(0.5)(cnt) AS value\nFROM (\n\tSELECT count() AS cnt\n\tFROM records\n\tWHERE $__timeFilter(event_wall_time)\n\tGROUP BY session_id\n)",
           "refId" : "A"
         }
       ],
@@ -457,7 +457,7 @@
           "format" : 1,
           "pluginVersion" : "4.4.0",
           "queryType" : "sql",
-          "rawSql" : "SELECT\n  toStartOfInterval(event_wall_time, INTERVAL 15 MINUTE) AS time,\n  quantile(0.50)((send_mono_nanos - event_mono_nanos) \/ 1e6) AS p50_total_ms,\n  quantile(0.95)((send_mono_nanos - event_mono_nanos) \/ 1e6) AS p95_total_ms\nFROM records\nWHERE $__timeFilter(event_wall_time)\n  AND send_mono_nanos >= event_mono_nanos\n  AND record_mono_nanos >= event_mono_nanos\n  AND send_mono_nanos >= record_mono_nanos\nGROUP BY time\nORDER BY time",
+          "rawSql" : "SELECT\n\ttoStartOfInterval(event_wall_time, INTERVAL 15 MINUTE) AS time,\n\tquantile(0.50)((send_mono_nanos - event_mono_nanos) \/ 1e6) AS p50_total_ms,\n\tquantile(0.95)((send_mono_nanos - event_mono_nanos) \/ 1e6) AS p95_total_ms\nFROM records\nWHERE $__timeFilter(event_wall_time)\n\tAND send_mono_nanos >= event_mono_nanos\n\tAND record_mono_nanos >= event_mono_nanos\n\tAND send_mono_nanos >= record_mono_nanos\nGROUP BY time\nORDER BY time",
           "refId" : "A"
         }
       ],
@@ -517,7 +517,7 @@
           "format" : 0,
           "pluginVersion" : "4.4.0",
           "queryType" : "sql",
-          "rawSql" : "SELECT\n  r.kind,\n  quantile(0.95)((r.send_mono_nanos - r.event_mono_nanos) \/ 1e6) AS p95_ms\nFROM records r\nWHERE $__timeFilter(r.event_wall_time)\n  AND r.send_mono_nanos >= r.event_mono_nanos\n  AND r.record_mono_nanos >= r.event_mono_nanos\n  AND r.send_mono_nanos >= r.record_mono_nanos\nGROUP BY r.kind\nORDER BY p95_ms DESC\nLIMIT 8",
+          "rawSql" : "SELECT\n\tr.kind,\n\tquantile(0.95)((r.send_mono_nanos - r.event_mono_nanos) \/ 1e6) AS p95_ms\nFROM records r\nWHERE $__timeFilter(r.event_wall_time)\n\tAND r.send_mono_nanos >= r.event_mono_nanos\n\tAND r.record_mono_nanos >= r.event_mono_nanos\n\tAND r.send_mono_nanos >= r.record_mono_nanos\nGROUP BY r.kind\nORDER BY p95_ms DESC\nLIMIT 8",
           "refId" : "A"
         }
       ],
@@ -648,7 +648,7 @@
           "format" : 0,
           "pluginVersion" : "4.4.0",
           "queryType" : "sql",
-          "rawSql" : "WITH\n  raw AS (SELECT count() AS c FROM records WHERE $__timeFilter(event_wall_time)),\n  fin AS (SELECT count() AS c FROM records FINAL WHERE $__timeFilter(event_wall_time))\nSELECT\n  raw.c AS raw_rows,\n  fin.c AS final_rows,\n  raw.c - fin.c AS duplicate_candidates\nFROM raw\nCROSS JOIN fin",
+          "rawSql" : "WITH\n\traw AS (SELECT count() AS c FROM records WHERE $__timeFilter(event_wall_time)),\n\tfin AS (SELECT count() AS c FROM records FINAL WHERE $__timeFilter(event_wall_time))\nSELECT\n\traw.c AS raw_rows,\n\tfin.c AS final_rows,\n\traw.c - fin.c AS duplicate_candidates\nFROM raw\nCROSS JOIN fin",
           "refId" : "A"
         }
       ],
@@ -724,7 +724,7 @@
           "format" : 1,
           "pluginVersion" : "4.4.0",
           "queryType" : "sql",
-          "rawSql" : "SELECT\n  toStartOfInterval(event_wall_time, INTERVAL 5 MINUTE) AS time,\n  count() AS records\nFROM records\nWHERE $__timeFilter(event_wall_time)\nGROUP BY time\nORDER BY time",
+          "rawSql" : "SELECT\n\ttoStartOfInterval(event_wall_time, INTERVAL 5 MINUTE) AS time,\n\tcount() AS records\nFROM records\nWHERE $__timeFilter(event_wall_time)\nGROUP BY time\nORDER BY time",
           "refId" : "A"
         }
       ],

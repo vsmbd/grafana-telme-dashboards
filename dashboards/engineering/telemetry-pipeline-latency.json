@@ -49,7 +49,7 @@
           "format" : 0,
           "pluginVersion" : "4.4.0",
           "queryType" : "sql",
-          "rawSql" : "SELECT\n  quantile(0.50)((record_mono_nanos - event_mono_nanos) \/ 1e6) AS p50_record_minus_event_ms,\n  quantile(0.95)((record_mono_nanos - event_mono_nanos) \/ 1e6) AS p95_record_minus_event_ms,\n  quantile(0.99)((record_mono_nanos - event_mono_nanos) \/ 1e6) AS p99_record_minus_event_ms,\n  quantile(0.50)((send_mono_nanos - record_mono_nanos) \/ 1e6) AS p50_send_minus_record_ms,\n  quantile(0.95)((send_mono_nanos - record_mono_nanos) \/ 1e6) AS p95_send_minus_record_ms,\n  quantile(0.99)((send_mono_nanos - record_mono_nanos) \/ 1e6) AS p99_send_minus_record_ms,\n  quantile(0.50)((send_mono_nanos - event_mono_nanos) \/ 1e6) AS p50_total_ms,\n  quantile(0.95)((send_mono_nanos - event_mono_nanos) \/ 1e6) AS p95_total_ms,\n  quantile(0.99)((send_mono_nanos - event_mono_nanos) \/ 1e6) AS p99_total_ms,\n  max((send_mono_nanos - event_mono_nanos) \/ 1e6) AS max_total_ms\nFROM records\nWHERE $__timeFilter(event_wall_time)\n  AND send_mono_nanos >= event_mono_nanos\n  AND record_mono_nanos >= event_mono_nanos\n  AND send_mono_nanos >= record_mono_nanos",
+          "rawSql" : "SELECT\n\tquantile(0.50)((record_mono_nanos - event_mono_nanos) \/ 1e6) AS p50_record_minus_event_ms,\n\tquantile(0.95)((record_mono_nanos - event_mono_nanos) \/ 1e6) AS p95_record_minus_event_ms,\n\tquantile(0.99)((record_mono_nanos - event_mono_nanos) \/ 1e6) AS p99_record_minus_event_ms,\n\tquantile(0.50)((send_mono_nanos - record_mono_nanos) \/ 1e6) AS p50_send_minus_record_ms,\n\tquantile(0.95)((send_mono_nanos - record_mono_nanos) \/ 1e6) AS p95_send_minus_record_ms,\n\tquantile(0.99)((send_mono_nanos - record_mono_nanos) \/ 1e6) AS p99_send_minus_record_ms,\n\tquantile(0.50)((send_mono_nanos - event_mono_nanos) \/ 1e6) AS p50_total_ms,\n\tquantile(0.95)((send_mono_nanos - event_mono_nanos) \/ 1e6) AS p95_total_ms,\n\tquantile(0.99)((send_mono_nanos - event_mono_nanos) \/ 1e6) AS p99_total_ms,\n\tmax((send_mono_nanos - event_mono_nanos) \/ 1e6) AS max_total_ms\nFROM records\nWHERE $__timeFilter(event_wall_time)\n\tAND send_mono_nanos >= event_mono_nanos\n\tAND record_mono_nanos >= event_mono_nanos\n\tAND send_mono_nanos >= record_mono_nanos",
           "refId" : "A"
         }
       ],
@@ -108,7 +108,7 @@
           "format" : 1,
           "pluginVersion" : "4.4.0",
           "queryType" : "sql",
-          "rawSql" : "SELECT\n  toStartOfInterval(event_wall_time, INTERVAL 15 MINUTE) AS time,\n  quantile(0.50)((send_mono_nanos - event_mono_nanos) \/ 1e6) AS p50_total_ms,\n  quantile(0.95)((send_mono_nanos - event_mono_nanos) \/ 1e6) AS p95_total_ms\nFROM records\nWHERE $__timeFilter(event_wall_time)\n  AND send_mono_nanos >= event_mono_nanos\n  AND record_mono_nanos >= event_mono_nanos\n  AND send_mono_nanos >= record_mono_nanos\nGROUP BY time\nORDER BY time",
+          "rawSql" : "SELECT\n\ttoStartOfInterval(event_wall_time, INTERVAL 15 MINUTE) AS time,\n\tquantile(0.50)((send_mono_nanos - event_mono_nanos) \/ 1e6) AS p50_total_ms,\n\tquantile(0.95)((send_mono_nanos - event_mono_nanos) \/ 1e6) AS p95_total_ms\nFROM records\nWHERE $__timeFilter(event_wall_time)\n\tAND send_mono_nanos >= event_mono_nanos\n\tAND record_mono_nanos >= event_mono_nanos\n\tAND send_mono_nanos >= record_mono_nanos\nGROUP BY time\nORDER BY time",
           "refId" : "A"
         }
       ],
@@ -167,7 +167,7 @@
           "format" : 1,
           "pluginVersion" : "4.4.0",
           "queryType" : "sql",
-          "rawSql" : "SELECT\n  toStartOfInterval(event_wall_time, INTERVAL 15 MINUTE) AS time,\n  quantile(0.95)((record_mono_nanos - event_mono_nanos) \/ 1e6) AS p95_event_to_record_ms,\n  quantile(0.95)((send_mono_nanos - record_mono_nanos) \/ 1e6) AS p95_record_to_send_ms\nFROM records\nWHERE $__timeFilter(event_wall_time)\n  AND send_mono_nanos >= event_mono_nanos\n  AND record_mono_nanos >= event_mono_nanos\n  AND send_mono_nanos >= record_mono_nanos\nGROUP BY time\nORDER BY time",
+          "rawSql" : "SELECT\n\ttoStartOfInterval(event_wall_time, INTERVAL 15 MINUTE) AS time,\n\tquantile(0.95)((record_mono_nanos - event_mono_nanos) \/ 1e6) AS p95_event_to_record_ms,\n\tquantile(0.95)((send_mono_nanos - record_mono_nanos) \/ 1e6) AS p95_record_to_send_ms\nFROM records\nWHERE $__timeFilter(event_wall_time)\n\tAND send_mono_nanos >= event_mono_nanos\n\tAND record_mono_nanos >= event_mono_nanos\n\tAND send_mono_nanos >= record_mono_nanos\nGROUP BY time\nORDER BY time",
           "refId" : "A"
         }
       ],

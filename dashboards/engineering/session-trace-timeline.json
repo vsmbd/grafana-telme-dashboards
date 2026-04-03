@@ -49,7 +49,7 @@
           "format" : 0,
           "pluginVersion" : "4.4.0",
           "queryType" : "sql",
-          "rawSql" : "SELECT\n  r.record_id,\n  r.event_wall_time,\n  r.kind,\n  (r.record_mono_nanos - r.event_mono_nanos) \/ 1e6 AS record_minus_event_ms,\n  (r.send_mono_nanos - r.record_mono_nanos) \/ 1e6 AS send_minus_record_ms,\n  (r.send_mono_nanos - r.event_mono_nanos) \/ 1e6 AS total_ms,\n  substring(toString(r.correlation), 1, 200) AS correlation_snippet,\n  substring(toString(r.event_info), 1, 240) AS event_info_snippet,\n  substring(toString(r.event), 1, 240) AS event_snippet\nFROM (SELECT * FROM records FINAL) AS r\nWHERE $__timeFilter(r.event_wall_time)\n  AND isValidUUID('${session_id}')\n  AND r.session_id = toUUID('${session_id}')\nORDER BY r.record_id",
+          "rawSql" : "SELECT\n\tr.record_id,\n\tr.event_wall_time,\n\tr.kind,\n\t(r.record_mono_nanos - r.event_mono_nanos) \/ 1e6 AS record_minus_event_ms,\n\t(r.send_mono_nanos - r.record_mono_nanos) \/ 1e6 AS send_minus_record_ms,\n\t(r.send_mono_nanos - r.event_mono_nanos) \/ 1e6 AS total_ms,\n\tsubstring(toString(r.correlation), 1, 200) AS correlation_snippet,\n\tsubstring(toString(r.event_info), 1, 240) AS event_info_snippet,\n\tsubstring(toString(r.event), 1, 240) AS event_snippet\nFROM (SELECT * FROM records FINAL) AS r\nWHERE $__timeFilter(r.event_wall_time)\n\tAND isValidUUID('${session_id}')\n\tAND r.session_id = toUUID('${session_id}')\nORDER BY r.record_id",
           "refId" : "A"
         }
       ],

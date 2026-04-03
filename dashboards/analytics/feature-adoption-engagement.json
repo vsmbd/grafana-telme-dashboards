@@ -59,7 +59,7 @@
           "format" : 0,
           "pluginVersion" : "4.4.0",
           "queryType" : "sql",
-          "rawSql" : "SELECT round(avg(cnt), 2) AS value\nFROM (\n  SELECT count() AS cnt\n  FROM records\n  WHERE $__timeFilter(event_wall_time)\n  GROUP BY session_id\n)",
+          "rawSql" : "SELECT round(avg(cnt), 2) AS value\nFROM (\n\tSELECT count() AS cnt\n\tFROM records\n\tWHERE $__timeFilter(event_wall_time)\n\tGROUP BY session_id\n)",
           "refId" : "A"
         }
       ],
@@ -113,7 +113,7 @@
           "format" : 0,
           "pluginVersion" : "4.4.0",
           "queryType" : "sql",
-          "rawSql" : "SELECT quantileExact(0.5)(cnt) AS value\nFROM (\n  SELECT count() AS cnt\n  FROM records\n  WHERE $__timeFilter(event_wall_time)\n  GROUP BY session_id\n)",
+          "rawSql" : "SELECT quantileExact(0.5)(cnt) AS value\nFROM (\n\tSELECT count() AS cnt\n\tFROM records\n\tWHERE $__timeFilter(event_wall_time)\n\tGROUP BY session_id\n)",
           "refId" : "A"
         }
       ],
@@ -221,7 +221,7 @@
           "format" : 0,
           "pluginVersion" : "4.4.0",
           "queryType" : "sql",
-          "rawSql" : "SELECT countIf(cnt >= 5) AS value\nFROM (\n  SELECT session_id, count() AS cnt\n  FROM records\n  WHERE $__timeFilter(event_wall_time)\n  GROUP BY session_id\n)",
+          "rawSql" : "SELECT countIf(cnt >= 5) AS value\nFROM (\n\tSELECT session_id, count() AS cnt\n\tFROM records\n\tWHERE $__timeFilter(event_wall_time)\n\tGROUP BY session_id\n)",
           "refId" : "A"
         }
       ],
@@ -280,7 +280,7 @@
           "format" : 1,
           "pluginVersion" : "4.4.0",
           "queryType" : "sql",
-          "rawSql" : "SELECT\n  toStartOfInterval(event_wall_time, INTERVAL 1 MINUTE) AS time,\n  count() AS rpm\nFROM records\nWHERE $__timeFilter(event_wall_time)\nGROUP BY time\nORDER BY time",
+          "rawSql" : "SELECT\n\ttoStartOfInterval(event_wall_time, INTERVAL 1 MINUTE) AS time,\n\tcount() AS rpm\nFROM records\nWHERE $__timeFilter(event_wall_time)\nGROUP BY time\nORDER BY time",
           "refId" : "A"
         }
       ],
@@ -370,7 +370,7 @@
           "format" : 0,
           "pluginVersion" : "4.4.0",
           "queryType" : "sql",
-          "rawSql" : "SELECT\n  cnt AS records_in_session,\n  count() AS num_sessions\nFROM (\n  SELECT session_id, count() AS cnt\n  FROM records\n  WHERE $__timeFilter(event_wall_time)\n  GROUP BY session_id\n)\nGROUP BY cnt\nORDER BY cnt\nLIMIT 200",
+          "rawSql" : "SELECT\n\tcnt AS records_in_session,\n\tcount() AS num_sessions\nFROM (\n\tSELECT session_id, count() AS cnt\n\tFROM records\n\tWHERE $__timeFilter(event_wall_time)\n\tGROUP BY session_id\n)\nGROUP BY cnt\nORDER BY cnt\nLIMIT 200",
           "refId" : "A"
         }
       ],

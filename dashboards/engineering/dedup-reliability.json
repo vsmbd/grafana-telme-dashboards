@@ -49,7 +49,7 @@
           "format" : 0,
           "pluginVersion" : "4.4.0",
           "queryType" : "sql",
-          "rawSql" : "WITH\n  raw AS (SELECT count() AS c FROM records WHERE $__timeFilter(event_wall_time)),\n  fin AS (SELECT count() AS c FROM records FINAL WHERE $__timeFilter(event_wall_time))\nSELECT\n  raw.c AS raw_row_count,\n  fin.c AS final_row_count,\n  raw.c - fin.c AS duplicate_candidate_rows\nFROM raw\nCROSS JOIN fin",
+          "rawSql" : "WITH\n\traw AS (SELECT count() AS c FROM records WHERE $__timeFilter(event_wall_time)),\n\tfin AS (SELECT count() AS c FROM records FINAL WHERE $__timeFilter(event_wall_time))\nSELECT\n\traw.c AS raw_row_count,\n\tfin.c AS final_row_count,\n\traw.c - fin.c AS duplicate_candidate_rows\nFROM raw\nCROSS JOIN fin",
           "refId" : "A"
         }
       ],
@@ -93,7 +93,7 @@
           "format" : 0,
           "pluginVersion" : "4.4.0",
           "queryType" : "sql",
-          "rawSql" : "SELECT\n  session_id,\n  record_id,\n  count() AS row_versions,\n  max(send_mono_nanos) - min(send_mono_nanos) AS send_mono_span_ns\nFROM records\nWHERE $__timeFilter(event_wall_time)\nGROUP BY session_id, record_id\nHAVING row_versions > 1\nORDER BY row_versions DESC\nLIMIT 100",
+          "rawSql" : "SELECT\n\tsession_id,\n\trecord_id,\n\tcount() AS row_versions,\n\tmax(send_mono_nanos) - min(send_mono_nanos) AS send_mono_span_ns\nFROM records\nWHERE $__timeFilter(event_wall_time)\nGROUP BY session_id, record_id\nHAVING row_versions > 1\nORDER BY row_versions DESC\nLIMIT 100",
           "refId" : "A"
         }
       ],
@@ -152,7 +152,7 @@
           "format" : 1,
           "pluginVersion" : "4.4.0",
           "queryType" : "sql",
-          "rawSql" : "SELECT\n  toStartOfInterval(event_wall_time, INTERVAL 1 HOUR) AS time,\n  count() AS raw_rows,\n  count() - uniqExact(tuple(session_id, record_id)) AS approx_duplicate_rows\nFROM records\nWHERE $__timeFilter(event_wall_time)\nGROUP BY time\nORDER BY time",
+          "rawSql" : "SELECT\n\ttoStartOfInterval(event_wall_time, INTERVAL 1 HOUR) AS time,\n\tcount() AS raw_rows,\n\tcount() - uniqExact(tuple(session_id, record_id)) AS approx_duplicate_rows\nFROM records\nWHERE $__timeFilter(event_wall_time)\nGROUP BY time\nORDER BY time",
           "refId" : "A"
         }
       ],

@@ -83,7 +83,7 @@
           "format" : 1,
           "pluginVersion" : "4.4.0",
           "queryType" : "sql",
-          "rawSql" : "SELECT\n  toStartOfInterval(event_wall_time, INTERVAL 5 MINUTE) AS time,\n  count() AS records_inserted\nFROM records\nWHERE $__timeFilter(event_wall_time)\nGROUP BY time\nORDER BY time",
+          "rawSql" : "SELECT\n\ttoStartOfInterval(event_wall_time, INTERVAL 5 MINUTE) AS time,\n\tcount() AS records_inserted\nFROM records\nWHERE $__timeFilter(event_wall_time)\nGROUP BY time\nORDER BY time",
           "refId" : "A"
         }
       ],
@@ -142,7 +142,7 @@
           "format" : 1,
           "pluginVersion" : "4.4.0",
           "queryType" : "sql",
-          "rawSql" : "SELECT\n  toStartOfInterval(event_wall_time, INTERVAL 5 MINUTE) AS time,\n  uniqExact(session_id) AS sessions_touching\nFROM records\nWHERE $__timeFilter(event_wall_time)\nGROUP BY time\nORDER BY time",
+          "rawSql" : "SELECT\n\ttoStartOfInterval(event_wall_time, INTERVAL 5 MINUTE) AS time,\n\tuniqExact(session_id) AS sessions_touching\nFROM records\nWHERE $__timeFilter(event_wall_time)\nGROUP BY time\nORDER BY time",
           "refId" : "A"
         }
       ],
@@ -186,7 +186,7 @@
           "format" : 0,
           "pluginVersion" : "4.4.0",
           "queryType" : "sql",
-          "rawSql" : "SELECT\n  partition,\n  sum(rows) AS rows,\n  formatReadableSize(sum(bytes_on_disk)) AS size\nFROM system.parts\nWHERE database = currentDatabase()\n  AND table = 'records'\n  AND active\nGROUP BY partition\nORDER BY partition DESC\nLIMIT 24",
+          "rawSql" : "SELECT\n\tpartition,\n\tsum(rows) AS rows,\n\tformatReadableSize(sum(bytes_on_disk)) AS size\nFROM system.parts\nWHERE database = currentDatabase()\n\tAND table = 'records'\n\tAND active\nGROUP BY partition\nORDER BY partition DESC\nLIMIT 24",
           "refId" : "A"
         }
       ],
@@ -230,7 +230,7 @@
           "format" : 0,
           "pluginVersion" : "4.4.0",
           "queryType" : "sql",
-          "rawSql" : "SELECT\n  session_id,\n  count() AS records_in_range,\n  min(event_wall_time) AS first_ev,\n  max(event_wall_time) AS last_ev\nFROM records\nWHERE $__timeFilter(event_wall_time)\nGROUP BY session_id\nORDER BY records_in_range DESC\nLIMIT 25",
+          "rawSql" : "SELECT\n\tsession_id,\n\tcount() AS records_in_range,\n\tmin(event_wall_time) AS first_ev,\n\tmax(event_wall_time) AS last_ev\nFROM records\nWHERE $__timeFilter(event_wall_time)\nGROUP BY session_id\nORDER BY records_in_range DESC\nLIMIT 25",
           "refId" : "A"
         }
       ],

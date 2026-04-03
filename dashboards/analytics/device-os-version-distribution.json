@@ -156,7 +156,7 @@
           "format" : 1,
           "pluginVersion" : "4.4.0",
           "queryType" : "sql",
-          "rawSql" : "SELECT\n  toStartOfInterval(r.event_wall_time, INTERVAL 6 HOUR) AS time,\n  s.device_os AS os,\n  uniqExact(r.session_id) AS sessions\nFROM records r\nINNER JOIN (SELECT * FROM app_sessions FINAL) AS s ON r.session_id = s.session_id\nWHERE $__timeFilter(r.event_wall_time)\n  AND s.device_os IN (\n    SELECT device_os FROM (\n      SELECT s2.device_os AS device_os, uniqExact(r2.session_id) c\n      FROM records r2\n      INNER JOIN (SELECT * FROM app_sessions FINAL) AS s2 ON r2.session_id = s2.session_id\n      WHERE $__timeFilter(r2.event_wall_time)\n      GROUP BY s2.device_os\n      ORDER BY c DESC\n      LIMIT 5\n    )\n  )\nGROUP BY time, s.device_os\nORDER BY time",
+          "rawSql" : "SELECT\n\ttoStartOfInterval(r.event_wall_time, INTERVAL 6 HOUR) AS time,\n\ts.device_os AS os,\n\tuniqExact(r.session_id) AS sessions\nFROM records r\nINNER JOIN (SELECT * FROM app_sessions FINAL) AS s ON r.session_id = s.session_id\nWHERE $__timeFilter(r.event_wall_time)\n\tAND s.device_os IN (\n\tSELECT device_os FROM (\n\t\tSELECT s2.device_os AS device_os, uniqExact(r2.session_id) c\n\t\tFROM records r2\n\t\tINNER JOIN (SELECT * FROM app_sessions FINAL) AS s2 ON r2.session_id = s2.session_id\n\t\tWHERE $__timeFilter(r2.event_wall_time)\n\t\tGROUP BY s2.device_os\n\t\tORDER BY c DESC\n\t\tLIMIT 5\n\t)\n\t)\nGROUP BY time, s.device_os\nORDER BY time",
           "refId" : "A"
         }
       ],
@@ -200,7 +200,7 @@
           "format" : 0,
           "pluginVersion" : "4.4.0",
           "queryType" : "sql",
-          "rawSql" : "SELECT\n  s.app_version,\n  s.device_hardware_model,\n  uniqExact(r.session_id) AS sessions\nFROM records r\nINNER JOIN (SELECT * FROM app_sessions FINAL) AS s ON r.session_id = s.session_id\nWHERE $__timeFilter(r.event_wall_time)\nGROUP BY s.app_version, s.device_hardware_model\nORDER BY sessions DESC\nLIMIT 40",
+          "rawSql" : "SELECT\n\ts.app_version,\n\ts.device_hardware_model,\n\tuniqExact(r.session_id) AS sessions\nFROM records r\nINNER JOIN (SELECT * FROM app_sessions FINAL) AS s ON r.session_id = s.session_id\nWHERE $__timeFilter(r.event_wall_time)\nGROUP BY s.app_version, s.device_hardware_model\nORDER BY sessions DESC\nLIMIT 40",
           "refId" : "A"
         }
       ],

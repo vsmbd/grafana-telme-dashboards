@@ -388,7 +388,7 @@
           "format" : 1,
           "pluginVersion" : "4.4.0",
           "queryType" : "sql",
-          "rawSql" : "SELECT\n  toStartOfInterval(r.event_wall_time, INTERVAL 15 MINUTE) AS time,\n  uniqExact(r.session_id) AS sessions\nFROM records AS r\nWHERE $__timeFilter(r.event_wall_time)\nGROUP BY time\nORDER BY time",
+          "rawSql" : "SELECT\n\ttoStartOfInterval(r.event_wall_time, INTERVAL 15 MINUTE) AS time,\n\tuniqExact(r.session_id) AS sessions\nFROM records AS r\nWHERE $__timeFilter(r.event_wall_time)\nGROUP BY time\nORDER BY time",
           "refId" : "A"
         }
       ],
@@ -447,7 +447,7 @@
           "format" : 1,
           "pluginVersion" : "4.4.0",
           "queryType" : "sql",
-          "rawSql" : "SELECT\n  toStartOfInterval(r.event_wall_time, INTERVAL 15 MINUTE) AS time,\n  count() AS records\nFROM records AS r\nWHERE $__timeFilter(r.event_wall_time)\nGROUP BY time\nORDER BY time",
+          "rawSql" : "SELECT\n\ttoStartOfInterval(r.event_wall_time, INTERVAL 15 MINUTE) AS time,\n\tcount() AS records\nFROM records AS r\nWHERE $__timeFilter(r.event_wall_time)\nGROUP BY time\nORDER BY time",
           "refId" : "A"
         }
       ],
@@ -493,7 +493,7 @@
           "format" : 0,
           "pluginVersion" : "4.4.0",
           "queryType" : "sql",
-          "rawSql" : "SELECT\n  s.app_version AS version,\n  uniqExact(r.session_id) AS sessions\nFROM records AS r\nINNER JOIN (SELECT * FROM app_sessions FINAL) AS s ON r.session_id = s.session_id\nWHERE $__timeFilter(r.event_wall_time)\nGROUP BY s.app_version\nORDER BY sessions DESC\nLIMIT 20",
+          "rawSql" : "SELECT\n\ts.app_version AS version,\n\tuniqExact(r.session_id) AS sessions\nFROM records AS r\nINNER JOIN (SELECT * FROM app_sessions FINAL) AS s ON r.session_id = s.session_id\nWHERE $__timeFilter(r.event_wall_time)\nGROUP BY s.app_version\nORDER BY sessions DESC\nLIMIT 20",
           "refId" : "A"
         }
       ],
@@ -539,7 +539,7 @@
           "format" : 0,
           "pluginVersion" : "4.4.0",
           "queryType" : "sql",
-          "rawSql" : "SELECT\n  s.device_hardware_model AS model,\n  uniqExact(r.session_id) AS sessions\nFROM records AS r\nINNER JOIN (SELECT * FROM app_sessions FINAL) AS s ON r.session_id = s.session_id\nWHERE $__timeFilter(r.event_wall_time)\nGROUP BY s.device_hardware_model\nORDER BY sessions DESC\nLIMIT 20",
+          "rawSql" : "SELECT\n\ts.device_hardware_model AS model,\n\tuniqExact(r.session_id) AS sessions\nFROM records AS r\nINNER JOIN (SELECT * FROM app_sessions FINAL) AS s ON r.session_id = s.session_id\nWHERE $__timeFilter(r.event_wall_time)\nGROUP BY s.device_hardware_model\nORDER BY sessions DESC\nLIMIT 20",
           "refId" : "A"
         }
       ],
