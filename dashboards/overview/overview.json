@@ -1,0 +1,776 @@
+{
+  "annotations" : {
+    "list" : [
+
+    ]
+  },
+  "description" : "Highlights from all Telme dashboards; use data links to drill down.",
+  "editable" : true,
+  "fiscalYearStartMonth" : 0,
+  "graphTooltip" : 1,
+  "links" : [
+
+  ],
+  "liveNow" : false,
+  "panels" : [
+    {
+      "gridPos" : {
+        "h" : 3,
+        "w" : 24,
+        "x" : 0,
+        "y" : 0
+      },
+      "id" : 1,
+      "options" : {
+        "code" : {
+          "language" : "markdown",
+          "showLineNumbers" : false
+        },
+        "content" : "### Telme overview\n\nEach tile mirrors the **main signal** from a detailed dashboard. **Click the stat or series** (data link), or use **Open full dashboard →** in the panel menu, to jump there — the time range is kept where supported."
+      },
+      "title" : "",
+      "transparent" : true,
+      "type" : "text"
+    },
+    {
+      "datasource" : {
+        "type" : "grafana-clickhouse-datasource",
+        "uid" : "${datasource}"
+      },
+      "fieldConfig" : {
+        "defaults" : {
+          "color" : {
+            "mode" : "palette-classic"
+          },
+          "custom" : {
+            "axisBorderShow" : false,
+            "axisLabel" : "",
+            "drawStyle" : "line",
+            "fillOpacity" : 12,
+            "lineWidth" : 1,
+            "pointSize" : 4,
+            "showPoints" : "auto",
+            "spanNulls" : false
+          },
+          "links" : [
+            {
+              "targetBlank" : false,
+              "title" : "Open full dashboard",
+              "url" : "\/d\/telme-analytics-product-overview?${__url_time_range}"
+            }
+          ],
+          "unit" : "short"
+        },
+        "overrides" : [
+
+        ]
+      },
+      "gridPos" : {
+        "h" : 6,
+        "w" : 12,
+        "x" : 0,
+        "y" : 3
+      },
+      "id" : 2,
+      "links" : [
+        {
+          "icon" : "dashboard",
+          "targetBlank" : false,
+          "title" : "Open full dashboard →",
+          "tooltip" : "Opens the detailed dashboard for this area; keeps the selected time range.",
+          "type" : "link",
+          "url" : "\/d\/telme-analytics-product-overview?${__url_time_range}"
+        }
+      ],
+      "options" : {
+        "legend" : {
+          "displayMode" : "list",
+          "placement" : "bottom"
+        },
+        "tooltip" : {
+          "mode" : "single"
+        }
+      },
+      "targets" : [
+        {
+          "datasource" : {
+            "type" : "grafana-clickhouse-datasource",
+            "uid" : "${datasource}"
+          },
+          "editorType" : "sql",
+          "format" : 1,
+          "pluginVersion" : "4.4.0",
+          "queryType" : "sql",
+          "rawSql" : "SELECT\n  toStartOfInterval(r.event_wall_time, INTERVAL 15 MINUTE) AS time,\n  uniqExact(r.session_id) AS sessions\nFROM records AS r\nWHERE $__timeFilter(r.event_wall_time)\nGROUP BY time\nORDER BY time",
+          "refId" : "A"
+        }
+      ],
+      "title" : "Product activity — active sessions",
+      "type" : "timeseries"
+    },
+    {
+      "datasource" : {
+        "type" : "grafana-clickhouse-datasource",
+        "uid" : "${datasource}"
+      },
+      "fieldConfig" : {
+        "defaults" : {
+          "color" : {
+            "mode" : "palette-classic"
+          },
+          "custom" : {
+            "axisBorderShow" : false,
+            "axisLabel" : "",
+            "drawStyle" : "line",
+            "fillOpacity" : 12,
+            "lineWidth" : 1,
+            "pointSize" : 4,
+            "showPoints" : "auto",
+            "spanNulls" : false
+          },
+          "links" : [
+            {
+              "targetBlank" : false,
+              "title" : "Open full dashboard",
+              "url" : "\/d\/telme-analytics-user-funnel?${__url_time_range}"
+            }
+          ],
+          "unit" : "short"
+        },
+        "overrides" : [
+
+        ]
+      },
+      "gridPos" : {
+        "h" : 6,
+        "w" : 12,
+        "x" : 12,
+        "y" : 3
+      },
+      "id" : 3,
+      "links" : [
+        {
+          "icon" : "dashboard",
+          "targetBlank" : false,
+          "title" : "Open full dashboard →",
+          "tooltip" : "Opens the detailed dashboard for this area; keeps the selected time range.",
+          "type" : "link",
+          "url" : "\/d\/telme-analytics-user-funnel?${__url_time_range}"
+        }
+      ],
+      "options" : {
+        "legend" : {
+          "displayMode" : "list",
+          "placement" : "bottom"
+        },
+        "tooltip" : {
+          "mode" : "single"
+        }
+      },
+      "targets" : [
+        {
+          "datasource" : {
+            "type" : "grafana-clickhouse-datasource",
+            "uid" : "${datasource}"
+          },
+          "editorType" : "sql",
+          "format" : 1,
+          "pluginVersion" : "4.4.0",
+          "queryType" : "sql",
+          "rawSql" : "SELECT\n  toStartOfInterval(r.event_wall_time, INTERVAL 1 HOUR) AS time,\n  uniqExactIf(r.session_id, r.kind LIKE '%CheckpointEvent%' OR r.kind LIKE '%checkpoint%') AS checkpoint_sessions,\n  uniqExactIf(r.session_id, r.kind LIKE '%TaskQueue%') AS taskqueue_sessions\nFROM records AS r\nWHERE $__timeFilter(r.event_wall_time)\nGROUP BY time\nORDER BY time",
+          "refId" : "A"
+        }
+      ],
+      "title" : "Funnel — sessions touching checkpoint vs task families",
+      "type" : "timeseries"
+    },
+    {
+      "datasource" : {
+        "type" : "grafana-clickhouse-datasource",
+        "uid" : "${datasource}"
+      },
+      "fieldConfig" : {
+        "defaults" : {
+          "links" : [
+            {
+              "targetBlank" : false,
+              "title" : "Open full dashboard",
+              "url" : "\/d\/telme-analytics-feature-adoption?${__url_time_range}"
+            }
+          ],
+          "unit" : "short"
+        },
+        "overrides" : [
+
+        ]
+      },
+      "gridPos" : {
+        "h" : 6,
+        "w" : 12,
+        "x" : 0,
+        "y" : 9
+      },
+      "id" : 4,
+      "links" : [
+        {
+          "icon" : "dashboard",
+          "targetBlank" : false,
+          "title" : "Open full dashboard →",
+          "tooltip" : "Opens the detailed dashboard for this area; keeps the selected time range.",
+          "type" : "link",
+          "url" : "\/d\/telme-analytics-feature-adoption?${__url_time_range}"
+        }
+      ],
+      "options" : {
+        "colorMode" : "value",
+        "graphMode" : "none",
+        "justifyMode" : "auto",
+        "orientation" : "auto",
+        "percentChangeColorMode" : "standard",
+        "reduceOptions" : {
+          "calcs" : [
+            "lastNotNull"
+          ],
+          "fields" : "",
+          "values" : false
+        },
+        "showPercentChange" : false,
+        "textMode" : "auto",
+        "wideLayout" : true
+      },
+      "targets" : [
+        {
+          "datasource" : {
+            "type" : "grafana-clickhouse-datasource",
+            "uid" : "${datasource}"
+          },
+          "editorType" : "sql",
+          "format" : 0,
+          "pluginVersion" : "4.4.0",
+          "queryType" : "sql",
+          "rawSql" : "SELECT round(avg(cnt), 2) AS value\nFROM (\n  SELECT count() AS cnt\n  FROM records\n  WHERE $__timeFilter(event_wall_time)\n  GROUP BY session_id\n)",
+          "refId" : "A"
+        }
+      ],
+      "title" : "Engagement — mean records \/ session",
+      "type" : "stat"
+    },
+    {
+      "datasource" : {
+        "type" : "grafana-clickhouse-datasource",
+        "uid" : "${datasource}"
+      },
+      "fieldConfig" : {
+        "defaults" : {
+          "links" : [
+            {
+              "targetBlank" : false,
+              "title" : "Open full dashboard",
+              "url" : "\/d\/telme-analytics-device-os-version?${__url_time_range}"
+            }
+          ]
+        },
+        "overrides" : [
+
+        ]
+      },
+      "gridPos" : {
+        "h" : 6,
+        "w" : 12,
+        "x" : 12,
+        "y" : 9
+      },
+      "id" : 5,
+      "links" : [
+        {
+          "icon" : "dashboard",
+          "targetBlank" : false,
+          "title" : "Open full dashboard →",
+          "tooltip" : "Opens the detailed dashboard for this area; keeps the selected time range.",
+          "type" : "link",
+          "url" : "\/d\/telme-analytics-device-os-version?${__url_time_range}"
+        }
+      ],
+      "options" : {
+        "barRadius" : 0,
+        "barWidth" : 0.9,
+        "orientation" : "horizontal",
+        "showValue" : "auto",
+        "stacking" : "none",
+        "xField" : "version",
+        "xTickLabelRotation" : 0
+      },
+      "targets" : [
+        {
+          "datasource" : {
+            "type" : "grafana-clickhouse-datasource",
+            "uid" : "${datasource}"
+          },
+          "editorType" : "sql",
+          "format" : 0,
+          "pluginVersion" : "4.4.0",
+          "queryType" : "sql",
+          "rawSql" : "SELECT s.app_version AS version, uniqExact(r.session_id) AS sessions\nFROM records r\nINNER JOIN (SELECT * FROM app_sessions FINAL) AS s ON r.session_id = s.session_id\nWHERE $__timeFilter(r.event_wall_time)\nGROUP BY s.app_version\nORDER BY sessions DESC\nLIMIT 10",
+          "refId" : "A"
+        }
+      ],
+      "title" : "Platform — sessions by app version (top 10)",
+      "type" : "barchart"
+    },
+    {
+      "datasource" : {
+        "type" : "grafana-clickhouse-datasource",
+        "uid" : "${datasource}"
+      },
+      "fieldConfig" : {
+        "defaults" : {
+          "links" : [
+            {
+              "targetBlank" : false,
+              "title" : "Open full dashboard",
+              "url" : "\/d\/telme-analytics-session-quality?${__url_time_range}"
+            }
+          ],
+          "unit" : "short"
+        },
+        "overrides" : [
+
+        ]
+      },
+      "gridPos" : {
+        "h" : 6,
+        "w" : 12,
+        "x" : 0,
+        "y" : 15
+      },
+      "id" : 6,
+      "links" : [
+        {
+          "icon" : "dashboard",
+          "targetBlank" : false,
+          "title" : "Open full dashboard →",
+          "tooltip" : "Opens the detailed dashboard for this area; keeps the selected time range.",
+          "type" : "link",
+          "url" : "\/d\/telme-analytics-session-quality?${__url_time_range}"
+        }
+      ],
+      "options" : {
+        "colorMode" : "value",
+        "graphMode" : "none",
+        "justifyMode" : "auto",
+        "orientation" : "auto",
+        "percentChangeColorMode" : "standard",
+        "reduceOptions" : {
+          "calcs" : [
+            "lastNotNull"
+          ],
+          "fields" : "",
+          "values" : false
+        },
+        "showPercentChange" : false,
+        "textMode" : "auto",
+        "wideLayout" : true
+      },
+      "targets" : [
+        {
+          "datasource" : {
+            "type" : "grafana-clickhouse-datasource",
+            "uid" : "${datasource}"
+          },
+          "editorType" : "sql",
+          "format" : 0,
+          "pluginVersion" : "4.4.0",
+          "queryType" : "sql",
+          "rawSql" : "SELECT quantileExact(0.5)(cnt) AS value\nFROM (\n  SELECT count() AS cnt\n  FROM records\n  WHERE $__timeFilter(event_wall_time)\n  GROUP BY session_id\n)",
+          "refId" : "A"
+        }
+      ],
+      "title" : "Sessions — median records \/ session",
+      "type" : "stat"
+    },
+    {
+      "datasource" : {
+        "type" : "grafana-clickhouse-datasource",
+        "uid" : "${datasource}"
+      },
+      "fieldConfig" : {
+        "defaults" : {
+          "color" : {
+            "mode" : "palette-classic"
+          },
+          "custom" : {
+            "axisBorderShow" : false,
+            "axisLabel" : "",
+            "drawStyle" : "line",
+            "fillOpacity" : 12,
+            "lineWidth" : 1,
+            "pointSize" : 4,
+            "showPoints" : "auto",
+            "spanNulls" : false
+          },
+          "links" : [
+            {
+              "targetBlank" : false,
+              "title" : "Open full dashboard",
+              "url" : "\/d\/telme-eng-pipeline-latency?${__url_time_range}"
+            }
+          ],
+          "unit" : "ms"
+        },
+        "overrides" : [
+
+        ]
+      },
+      "gridPos" : {
+        "h" : 6,
+        "w" : 12,
+        "x" : 12,
+        "y" : 15
+      },
+      "id" : 7,
+      "links" : [
+        {
+          "icon" : "dashboard",
+          "targetBlank" : false,
+          "title" : "Open full dashboard →",
+          "tooltip" : "Opens the detailed dashboard for this area; keeps the selected time range.",
+          "type" : "link",
+          "url" : "\/d\/telme-eng-pipeline-latency?${__url_time_range}"
+        }
+      ],
+      "options" : {
+        "legend" : {
+          "displayMode" : "list",
+          "placement" : "bottom"
+        },
+        "tooltip" : {
+          "mode" : "single"
+        }
+      },
+      "targets" : [
+        {
+          "datasource" : {
+            "type" : "grafana-clickhouse-datasource",
+            "uid" : "${datasource}"
+          },
+          "editorType" : "sql",
+          "format" : 1,
+          "pluginVersion" : "4.4.0",
+          "queryType" : "sql",
+          "rawSql" : "SELECT\n  toStartOfInterval(event_wall_time, INTERVAL 15 MINUTE) AS time,\n  quantile(0.50)((send_mono_nanos - event_mono_nanos) \/ 1e6) AS p50_total_ms,\n  quantile(0.95)((send_mono_nanos - event_mono_nanos) \/ 1e6) AS p95_total_ms\nFROM records\nWHERE $__timeFilter(event_wall_time)\n  AND send_mono_nanos >= event_mono_nanos\n  AND record_mono_nanos >= event_mono_nanos\n  AND send_mono_nanos >= record_mono_nanos\nGROUP BY time\nORDER BY time",
+          "refId" : "A"
+        }
+      ],
+      "title" : "Pipeline latency — p50 \/ p95 total (event → send, ms)",
+      "type" : "timeseries"
+    },
+    {
+      "datasource" : {
+        "type" : "grafana-clickhouse-datasource",
+        "uid" : "${datasource}"
+      },
+      "fieldConfig" : {
+        "defaults" : {
+          "links" : [
+            {
+              "targetBlank" : false,
+              "title" : "Open full dashboard",
+              "url" : "\/d\/telme-eng-latency-by-kind?${__url_time_range}"
+            }
+          ]
+        },
+        "overrides" : [
+
+        ]
+      },
+      "gridPos" : {
+        "h" : 6,
+        "w" : 12,
+        "x" : 0,
+        "y" : 21
+      },
+      "id" : 8,
+      "links" : [
+        {
+          "icon" : "dashboard",
+          "targetBlank" : false,
+          "title" : "Open full dashboard →",
+          "tooltip" : "Opens the detailed dashboard for this area; keeps the selected time range.",
+          "type" : "link",
+          "url" : "\/d\/telme-eng-latency-by-kind?${__url_time_range}"
+        }
+      ],
+      "options" : {
+        "cellHeight" : "sm",
+        "showHeader" : true,
+        "sortBy" : [
+
+        ]
+      },
+      "targets" : [
+        {
+          "datasource" : {
+            "type" : "grafana-clickhouse-datasource",
+            "uid" : "${datasource}"
+          },
+          "editorType" : "sql",
+          "format" : 0,
+          "pluginVersion" : "4.4.0",
+          "queryType" : "sql",
+          "rawSql" : "SELECT\n  r.kind,\n  quantile(0.95)((r.send_mono_nanos - r.event_mono_nanos) \/ 1e6) AS p95_ms\nFROM records r\nWHERE $__timeFilter(r.event_wall_time)\n  AND r.send_mono_nanos >= r.event_mono_nanos\n  AND r.record_mono_nanos >= r.event_mono_nanos\n  AND r.send_mono_nanos >= r.record_mono_nanos\nGROUP BY r.kind\nORDER BY p95_ms DESC\nLIMIT 8",
+          "refId" : "A"
+        }
+      ],
+      "title" : "Latency by kind — top 8 by p95 (ms)",
+      "type" : "table"
+    },
+    {
+      "datasource" : {
+        "type" : "grafana-clickhouse-datasource",
+        "uid" : "${datasource}"
+      },
+      "fieldConfig" : {
+        "defaults" : {
+          "links" : [
+            {
+              "targetBlank" : false,
+              "title" : "Open full dashboard",
+              "url" : "\/d\/telme-eng-session-trace?${__url_time_range}"
+            }
+          ],
+          "unit" : "short"
+        },
+        "overrides" : [
+
+        ]
+      },
+      "gridPos" : {
+        "h" : 6,
+        "w" : 12,
+        "x" : 12,
+        "y" : 21
+      },
+      "id" : 9,
+      "links" : [
+        {
+          "icon" : "dashboard",
+          "targetBlank" : false,
+          "title" : "Open full dashboard →",
+          "tooltip" : "Opens the detailed dashboard for this area; keeps the selected time range.",
+          "type" : "link",
+          "url" : "\/d\/telme-eng-session-trace?${__url_time_range}"
+        }
+      ],
+      "options" : {
+        "colorMode" : "value",
+        "graphMode" : "none",
+        "justifyMode" : "auto",
+        "orientation" : "auto",
+        "percentChangeColorMode" : "standard",
+        "reduceOptions" : {
+          "calcs" : [
+            "lastNotNull"
+          ],
+          "fields" : "",
+          "values" : false
+        },
+        "showPercentChange" : false,
+        "textMode" : "auto",
+        "wideLayout" : true
+      },
+      "targets" : [
+        {
+          "datasource" : {
+            "type" : "grafana-clickhouse-datasource",
+            "uid" : "${datasource}"
+          },
+          "editorType" : "sql",
+          "format" : 0,
+          "pluginVersion" : "4.4.0",
+          "queryType" : "sql",
+          "rawSql" : "SELECT uniqExact(session_id) AS value\nFROM records\nWHERE $__timeFilter(event_wall_time)",
+          "refId" : "A"
+        }
+      ],
+      "title" : "Session trace — distinct sessions (pick one in detail view)",
+      "type" : "stat"
+    },
+    {
+      "datasource" : {
+        "type" : "grafana-clickhouse-datasource",
+        "uid" : "${datasource}"
+      },
+      "fieldConfig" : {
+        "defaults" : {
+          "links" : [
+            {
+              "targetBlank" : false,
+              "title" : "Open full dashboard",
+              "url" : "\/d\/telme-eng-dedup-reliability?${__url_time_range}"
+            }
+          ]
+        },
+        "overrides" : [
+
+        ]
+      },
+      "gridPos" : {
+        "h" : 6,
+        "w" : 12,
+        "x" : 0,
+        "y" : 27
+      },
+      "id" : 10,
+      "links" : [
+        {
+          "icon" : "dashboard",
+          "targetBlank" : false,
+          "title" : "Open full dashboard →",
+          "tooltip" : "Opens the detailed dashboard for this area; keeps the selected time range.",
+          "type" : "link",
+          "url" : "\/d\/telme-eng-dedup-reliability?${__url_time_range}"
+        }
+      ],
+      "options" : {
+        "cellHeight" : "sm",
+        "showHeader" : true,
+        "sortBy" : [
+
+        ]
+      },
+      "targets" : [
+        {
+          "datasource" : {
+            "type" : "grafana-clickhouse-datasource",
+            "uid" : "${datasource}"
+          },
+          "editorType" : "sql",
+          "format" : 0,
+          "pluginVersion" : "4.4.0",
+          "queryType" : "sql",
+          "rawSql" : "WITH\n  raw AS (SELECT count() AS c FROM records WHERE $__timeFilter(event_wall_time)),\n  fin AS (SELECT count() AS c FROM records FINAL WHERE $__timeFilter(event_wall_time))\nSELECT\n  raw.c AS raw_rows,\n  fin.c AS final_rows,\n  raw.c - fin.c AS duplicate_candidates\nFROM raw\nCROSS JOIN fin",
+          "refId" : "A"
+        }
+      ],
+      "title" : "Dedup — raw vs FINAL row counts",
+      "type" : "table"
+    },
+    {
+      "datasource" : {
+        "type" : "grafana-clickhouse-datasource",
+        "uid" : "${datasource}"
+      },
+      "fieldConfig" : {
+        "defaults" : {
+          "color" : {
+            "mode" : "palette-classic"
+          },
+          "custom" : {
+            "axisBorderShow" : false,
+            "axisLabel" : "",
+            "drawStyle" : "line",
+            "fillOpacity" : 12,
+            "lineWidth" : 1,
+            "pointSize" : 4,
+            "showPoints" : "auto",
+            "spanNulls" : false
+          },
+          "links" : [
+            {
+              "targetBlank" : false,
+              "title" : "Open full dashboard",
+              "url" : "\/d\/telme-eng-ingestion-health?${__url_time_range}"
+            }
+          ],
+          "unit" : "short"
+        },
+        "overrides" : [
+
+        ]
+      },
+      "gridPos" : {
+        "h" : 6,
+        "w" : 12,
+        "x" : 12,
+        "y" : 27
+      },
+      "id" : 11,
+      "links" : [
+        {
+          "icon" : "dashboard",
+          "targetBlank" : false,
+          "title" : "Open full dashboard →",
+          "tooltip" : "Opens the detailed dashboard for this area; keeps the selected time range.",
+          "type" : "link",
+          "url" : "\/d\/telme-eng-ingestion-health?${__url_time_range}"
+        }
+      ],
+      "options" : {
+        "legend" : {
+          "displayMode" : "list",
+          "placement" : "bottom"
+        },
+        "tooltip" : {
+          "mode" : "single"
+        }
+      },
+      "targets" : [
+        {
+          "datasource" : {
+            "type" : "grafana-clickhouse-datasource",
+            "uid" : "${datasource}"
+          },
+          "editorType" : "sql",
+          "format" : 1,
+          "pluginVersion" : "4.4.0",
+          "queryType" : "sql",
+          "rawSql" : "SELECT\n  toStartOfInterval(event_wall_time, INTERVAL 5 MINUTE) AS time,\n  count() AS records\nFROM records\nWHERE $__timeFilter(event_wall_time)\nGROUP BY time\nORDER BY time",
+          "refId" : "A"
+        }
+      ],
+      "title" : "Ingestion — records per five-minute bucket",
+      "type" : "timeseries"
+    }
+  ],
+  "refresh" : "30s",
+  "schemaVersion" : 39,
+  "style" : "dark",
+  "tags" : [
+    "telme",
+    "overview"
+  ],
+  "templating" : {
+    "list" : [
+      {
+        "current" : {
+
+        },
+        "hide" : 0,
+        "includeAll" : false,
+        "label" : "ClickHouse",
+        "multi" : false,
+        "name" : "datasource",
+        "options" : [
+
+        ],
+        "query" : "grafana-clickhouse-datasource",
+        "refresh" : 1,
+        "regex" : "",
+        "skipUrlSync" : false,
+        "type" : "datasource"
+      }
+    ]
+  },
+  "time" : {
+    "from" : "now-7d",
+    "to" : "now"
+  },
+  "timepicker" : {
+
+  },
+  "timezone" : "utc",
+  "title" : "Overview",
+  "uid" : "telme-overview",
+  "version" : 1,
+  "weekStart" : ""
+}

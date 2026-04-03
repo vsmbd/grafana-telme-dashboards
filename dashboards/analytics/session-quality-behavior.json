@@ -1,0 +1,236 @@
+{
+  "annotations" : {
+    "list" : [
+
+    ]
+  },
+  "editable" : true,
+  "fiscalYearStartMonth" : 0,
+  "graphTooltip" : 1,
+  "links" : [
+
+  ],
+  "liveNow" : false,
+  "panels" : [
+    {
+      "datasource" : {
+        "type" : "grafana-clickhouse-datasource",
+        "uid" : "${datasource}"
+      },
+      "fieldConfig" : {
+        "defaults" : {
+
+        },
+        "overrides" : [
+
+        ]
+      },
+      "gridPos" : {
+        "h" : 4,
+        "w" : 24,
+        "x" : 0,
+        "y" : 0
+      },
+      "id" : 1,
+      "options" : {
+        "cellHeight" : "sm",
+        "showHeader" : true,
+        "sortBy" : [
+
+        ]
+      },
+      "targets" : [
+        {
+          "datasource" : {
+            "type" : "grafana-clickhouse-datasource",
+            "uid" : "${datasource}"
+          },
+          "editorType" : "sql",
+          "format" : 0,
+          "pluginVersion" : "4.4.0",
+          "queryType" : "sql",
+          "rawSql" : "WITH per AS (\n  SELECT\n    session_id,\n    count() AS records_in_session,\n    dateDiff('millisecond', min(event_wall_time), max(event_wall_time)) AS duration_ms\n  FROM records\n  WHERE $__timeFilter(event_wall_time)\n  GROUP BY session_id\n)\nSELECT\n  round(avg(records_in_session), 2) AS mean_records,\n  quantileExact(0.5)(records_in_session) AS median_records,\n  round(avg(duration_ms), 0) AS mean_duration_ms,\n  quantileExact(0.5)(duration_ms) AS median_duration_ms,\n  max(duration_ms) AS max_duration_ms\nFROM per",
+          "refId" : "A"
+        }
+      ],
+      "title" : "Session aggregates (duration = first→last event in range)",
+      "type" : "table"
+    },
+    {
+      "datasource" : {
+        "type" : "grafana-clickhouse-datasource",
+        "uid" : "${datasource}"
+      },
+      "fieldConfig" : {
+        "defaults" : {
+
+        },
+        "overrides" : [
+
+        ]
+      },
+      "gridPos" : {
+        "h" : 8,
+        "w" : 12,
+        "x" : 0,
+        "y" : 4
+      },
+      "id" : 2,
+      "options" : {
+        "barRadius" : 0,
+        "barWidth" : 0.9,
+        "orientation" : "horizontal",
+        "showValue" : "auto",
+        "stacking" : "none",
+        "xField" : "hour_utc",
+        "xTickLabelRotation" : 0
+      },
+      "targets" : [
+        {
+          "datasource" : {
+            "type" : "grafana-clickhouse-datasource",
+            "uid" : "${datasource}"
+          },
+          "editorType" : "sql",
+          "format" : 0,
+          "pluginVersion" : "4.4.0",
+          "queryType" : "sql",
+          "rawSql" : "SELECT\n  toString(toHour(event_wall_time)) AS hour_utc,\n  count() AS records\nFROM records\nWHERE $__timeFilter(event_wall_time)\nGROUP BY toHour(event_wall_time)\nORDER BY toHour(event_wall_time)",
+          "refId" : "A"
+        }
+      ],
+      "title" : "Hour-of-day (UTC) activity — records",
+      "type" : "barchart"
+    },
+    {
+      "datasource" : {
+        "type" : "grafana-clickhouse-datasource",
+        "uid" : "${datasource}"
+      },
+      "fieldConfig" : {
+        "defaults" : {
+
+        },
+        "overrides" : [
+
+        ]
+      },
+      "gridPos" : {
+        "h" : 8,
+        "w" : 12,
+        "x" : 12,
+        "y" : 4
+      },
+      "id" : 3,
+      "options" : {
+        "cellHeight" : "sm",
+        "showHeader" : true,
+        "sortBy" : [
+
+        ]
+      },
+      "targets" : [
+        {
+          "datasource" : {
+            "type" : "grafana-clickhouse-datasource",
+            "uid" : "${datasource}"
+          },
+          "editorType" : "sql",
+          "format" : 0,
+          "pluginVersion" : "4.4.0",
+          "queryType" : "sql",
+          "rawSql" : "SELECT\n  toDayOfWeek(event_wall_time) AS dow,\n  count() AS records\nFROM records\nWHERE $__timeFilter(event_wall_time)\nGROUP BY dow\nORDER BY dow",
+          "refId" : "A"
+        }
+      ],
+      "title" : "Day-of-week (UTC) — records",
+      "type" : "table"
+    },
+    {
+      "datasource" : {
+        "type" : "grafana-clickhouse-datasource",
+        "uid" : "${datasource}"
+      },
+      "fieldConfig" : {
+        "defaults" : {
+
+        },
+        "overrides" : [
+
+        ]
+      },
+      "gridPos" : {
+        "h" : 10,
+        "w" : 24,
+        "x" : 0,
+        "y" : 12
+      },
+      "id" : 4,
+      "options" : {
+        "cellHeight" : "sm",
+        "showHeader" : true,
+        "sortBy" : [
+
+        ]
+      },
+      "targets" : [
+        {
+          "datasource" : {
+            "type" : "grafana-clickhouse-datasource",
+            "uid" : "${datasource}"
+          },
+          "editorType" : "sql",
+          "format" : 0,
+          "pluginVersion" : "4.4.0",
+          "queryType" : "sql",
+          "rawSql" : "SELECT\n  session_id,\n  count() AS records_in_session,\n  min(event_wall_time) AS first_event,\n  max(event_wall_time) AS last_event\nFROM records\nWHERE $__timeFilter(event_wall_time)\nGROUP BY session_id\nORDER BY records_in_session DESC\nLIMIT 25",
+          "refId" : "A"
+        }
+      ],
+      "title" : "Busiest sessions (record count)",
+      "type" : "table"
+    }
+  ],
+  "refresh" : "30s",
+  "schemaVersion" : 39,
+  "style" : "dark",
+  "tags" : [
+    "telme",
+    "analytics",
+    "sessions"
+  ],
+  "templating" : {
+    "list" : [
+      {
+        "current" : {
+
+        },
+        "hide" : 0,
+        "includeAll" : false,
+        "label" : "ClickHouse",
+        "multi" : false,
+        "name" : "datasource",
+        "options" : [
+
+        ],
+        "query" : "grafana-clickhouse-datasource",
+        "refresh" : 1,
+        "regex" : "",
+        "skipUrlSync" : false,
+        "type" : "datasource"
+      }
+    ]
+  },
+  "time" : {
+    "from" : "now-7d",
+    "to" : "now"
+  },
+  "timepicker" : {
+
+  },
+  "timezone" : "utc",
+  "title" : "Session quality & behavioral patterns",
+  "uid" : "telme-analytics-session-quality",
+  "version" : 1,
+  "weekStart" : ""
+}

@@ -1,0 +1,128 @@
+{
+  "annotations" : {
+    "list" : [
+
+    ]
+  },
+  "editable" : true,
+  "fiscalYearStartMonth" : 0,
+  "graphTooltip" : 1,
+  "links" : [
+
+  ],
+  "liveNow" : false,
+  "panels" : [
+    {
+      "datasource" : {
+        "type" : "grafana-clickhouse-datasource",
+        "uid" : "${datasource}"
+      },
+      "fieldConfig" : {
+        "defaults" : {
+
+        },
+        "overrides" : [
+
+        ]
+      },
+      "gridPos" : {
+        "h" : 16,
+        "w" : 24,
+        "x" : 0,
+        "y" : 0
+      },
+      "id" : 2,
+      "options" : {
+        "cellHeight" : "sm",
+        "showHeader" : true,
+        "sortBy" : [
+
+        ]
+      },
+      "targets" : [
+        {
+          "datasource" : {
+            "type" : "grafana-clickhouse-datasource",
+            "uid" : "${datasource}"
+          },
+          "editorType" : "sql",
+          "format" : 0,
+          "pluginVersion" : "4.4.0",
+          "queryType" : "sql",
+          "rawSql" : "SELECT\n  r.record_id,\n  r.event_wall_time,\n  r.kind,\n  (r.record_mono_nanos - r.event_mono_nanos) \/ 1e6 AS record_minus_event_ms,\n  (r.send_mono_nanos - r.record_mono_nanos) \/ 1e6 AS send_minus_record_ms,\n  (r.send_mono_nanos - r.event_mono_nanos) \/ 1e6 AS total_ms,\n  substring(toString(r.correlation), 1, 200) AS correlation_snippet,\n  substring(toString(r.event_info), 1, 240) AS event_info_snippet,\n  substring(toString(r.event), 1, 240) AS event_snippet\nFROM (SELECT * FROM records FINAL) AS r\nWHERE $__timeFilter(r.event_wall_time)\n  AND isValidUUID('${session_id}')\n  AND r.session_id = toUUID('${session_id}')\nORDER BY r.record_id",
+          "refId" : "A"
+        }
+      ],
+      "title" : "Event timeline (monotonic deltas in ms)",
+      "type" : "table"
+    }
+  ],
+  "refresh" : "30s",
+  "schemaVersion" : 39,
+  "style" : "dark",
+  "tags" : [
+    "telme",
+    "engineering",
+    "trace"
+  ],
+  "templating" : {
+    "list" : [
+      {
+        "current" : {
+
+        },
+        "hide" : 0,
+        "includeAll" : false,
+        "label" : "ClickHouse",
+        "multi" : false,
+        "name" : "datasource",
+        "options" : [
+
+        ],
+        "query" : "grafana-clickhouse-datasource",
+        "refresh" : 1,
+        "regex" : "",
+        "skipUrlSync" : false,
+        "type" : "datasource"
+      },
+      {
+        "current" : {
+          "selected" : false,
+          "text" : "",
+          "value" : ""
+        },
+        "datasource" : {
+          "type" : "grafana-clickhouse-datasource",
+          "uid" : "${datasource}"
+        },
+        "definition" : "query",
+        "hide" : 0,
+        "includeAll" : false,
+        "label" : "session_id",
+        "multi" : false,
+        "name" : "session_id",
+        "options" : [
+
+        ],
+        "query" : "SELECT DISTINCT toString(session_id) AS __text, toString(session_id) AS __value FROM records WHERE $__timeFilter(event_wall_time) ORDER BY __text LIMIT 200",
+        "refresh" : 2,
+        "regex" : "",
+        "skipUrlSync" : false,
+        "sort" : 1,
+        "type" : "query"
+      }
+    ]
+  },
+  "time" : {
+    "from" : "now-7d",
+    "to" : "now"
+  },
+  "timepicker" : {
+
+  },
+  "timezone" : "utc",
+  "title" : "Session trace & event timeline",
+  "uid" : "telme-eng-session-trace",
+  "version" : 1,
+  "weekStart" : ""
+}
